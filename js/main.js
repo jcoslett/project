@@ -37,7 +37,6 @@ window.gameState = {
       );
     }
   }
-}
 
 
 function match(input1,input2){
@@ -57,14 +56,48 @@ function generateSound(){
   var randomSound = sounds[Math.floor(Math.random()*sounds.length)];
   return randomSound;
 }
-/*
-function initialDelay() {*/
+
+function initialDelay(){
+  return true;
+}
+
 function mainEvent(){
+for (i=0; i< trainingPeriod+2; i++){
+  //set initial delay
+  setTimeout(initialDelay, 250);
+  //move the turn count
+  flash++;
+  //generate a sound and make it the current one
+  currentSound = generateSound();
+  //play the sound
 
-}
-}
-*/
+  //record the sound generated
+  audioGens[flash-1].push(currentSound);
+  //generate a cell index and make it the current one
+  litCell = generateCell();
+  //light the cell
 
+  //record the cell lit
+  videoGens[flash-1].push(litCell);
+  //set canGuess if there have been enough flashes
+  if (flash > n){
+    canGuess = true;
+  }
+  //add a key input listener that records answer
+
+  //add another key input listener that records answer
+
+  //if match(current event, n back), change a dom attribute
+
+  //do this again for the other match
+
+  //set timeout for video display
+
+  //reset canGuess
+  canGuess == false;
+}
+  //return to home screen
+}
 Define a turn count, an n-back, random audio, random video, ability to guess, audio response, video response
 Match n back to get current correctness for both
 Display individual affirmation if a match
