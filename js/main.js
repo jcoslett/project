@@ -1,6 +1,7 @@
 
 window.gameState = {
   flashes: undefined,
+  test: undefined,
   n: 2,
   trainingPeriod : 20,
   speedSetting: 2000,
@@ -51,23 +52,30 @@ function delay(){
   return true;
 }
 
+function removeDiv(){
+$('td div').remove();
+}
+
+function resetMoves(){
+
+}
+
 function lightAndRecord() {
-  var index = generateCell();
-  litCell = index;
+  litCell = generateCell();
   var createdDiv = document.createElement("div");
-  document.getElementById("cell" + index).appendChild(createdDiv);
+  $("#cell" + litCell).append(createdDiv);
   gameState.videoGens.push(litCell);
 }
 
 function playAndRecord() {
-  var thisSound = generateSound();
-  currentSound = thisSound;
+  var currentSound = generateSound();
+  //play the sound
   gameState.audioGens.push(currentSound);
 }
 
 function mainEvent(){
   //set initial delay
-  setTimeout(initialDelay, 250);
+  setTimeout(delay, 250);
   for (i=0; i< trainingPeriod+2; i++){
   //move the turn count
   flash++;
@@ -80,13 +88,7 @@ function mainEvent(){
   //generate a cell index and make it the current one
   litCell = generateCell();
   //light the cell and record it
-  function lightAndRecord() {
-    var index = generateCell();
-    litCell = index;
-    var createdDiv = document.createElement("div");
-    document.getElementById("cell" + index).appendChild(createdDiv);
-    videoGens[flash-1].push(litCell);
-}
+
   //set canGuess if there have been enough flashes
   if (flash > n){
     canGuess = true;
@@ -108,7 +110,11 @@ function mainEvent(){
 }
   //return to home screen
 }
-/*
+function playIfMatched(){
+var audio = document.getElementById('SP');
+audio.play();
+}
+
 $(document).keydown(function(event) {
    var input = event.which; // return which key was pressed
    if((input === 81) || (input === 87) || (input === 69) ||
@@ -116,16 +122,18 @@ $(document).keydown(function(event) {
     (input === 68) || (input === 70) || (input === 90) ||
     (input === 88) || (input === 67)){
      currentAudioResp = true;
+     gameState.videoResps.push(currentVideoResp);
    } else if ((input === 80) || (input === 79) || (input === 73) ||
     (input === 85) || (input === 74) || (input === 75) ||
     (input === 76) || (input === 186) || (input === 77) ||
     (input === 78) || (input === 188) || (input === 190)){
      currentVideoResp = true;
+     gameState.videoResps.push(currentVideoResp);
    }
-   }
+
  });
 
-Define a turn count, an n-back, random audio, random video, ability to guess, audio response, video response
+/*Define a turn count, an n-back, random audio, random video, ability to guess, audio response, video response
 Match n back to get current correctness for both
 Display individual affirmation if a match
 Record current correctness for both by pushing onto correctness array
