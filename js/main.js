@@ -2,20 +2,20 @@
 window.gameState = {
   flashes: undefined,
   n: 2,
-  trainingPeriod : 20;
+  trainingPeriod : 20,
   speedSetting: 2000,
   isInProgress: false,
   canGuess: false,
   litCell: undefined,
-  currentSound: undefined
+  currentSound: undefined,
   currentAudioResp: undefined,
   currentVideoResp: undefined,
-  audioGens = [];
-  videoGens = [];
-  audioResps = [];
-  videoResps = [];
+  audioGens: [],
+  videoGens: [],
+  audioResps: [],
+  videoResps: [],
   }
-  printState: function() {
+  /*printState: function() {
     // console.log(this)
     if (!gameState.isInProgress) {
       console.log("Not currently training");
@@ -33,7 +33,7 @@ window.gameState = {
       );
     }
   }
-
+*/
 //Generates a random cell index from {0:8}
 function generateCell(){
   var randomCell = Math.floor(Math.random()*8);
@@ -51,10 +51,24 @@ function delay(){
   return true;
 }
 
+function lightAndRecord() {
+  var index = generateCell();
+  litCell = index;
+  var createdDiv = document.createElement("div");
+  document.getElementById("cell" + index).appendChild(createdDiv);
+  gameState.videoGens.push(litCell);
+}
+
+function playAndRecord() {
+  var thisSound = generateSound();
+  currentSound = thisSound;
+  gameState.audioGens.push(currentSound);
+}
+
 function mainEvent(){
-//set initial delay
-setTimeout(initialDelay, 250);
-for (i=0; i< trainingPeriod+2; i++){
+  //set initial delay
+  setTimeout(initialDelay, 250);
+  for (i=0; i< trainingPeriod+2; i++){
   //move the turn count
   flash++;
   //generate a sound and make it the current one
@@ -65,12 +79,14 @@ for (i=0; i< trainingPeriod+2; i++){
   audioGens[flash-1].push(currentSound);
   //generate a cell index and make it the current one
   litCell = generateCell();
-  //light the cell
-  var index = generateCell();
-  var createdDiv = document.createElement("DIV");
-  document.getElementById("cell" + index).appendChild(createdDiv);
-  //record the cell lit
-  videoGens[flash-1].push(litCell);
+  //light the cell and record it
+  function lightAndRecord() {
+    var index = generateCell();
+    litCell = index;
+    var createdDiv = document.createElement("div");
+    document.getElementById("cell" + index).appendChild(createdDiv);
+    videoGens[flash-1].push(litCell);
+}
   //set canGuess if there have been enough flashes
   if (flash > n){
     canGuess = true;
@@ -92,7 +108,7 @@ for (i=0; i< trainingPeriod+2; i++){
 }
   //return to home screen
 }
-
+/*
 $(document).keydown(function(event) {
    var input = event.which; // return which key was pressed
    if((input === 81) || (input === 87) || (input === 69) ||
@@ -108,6 +124,7 @@ $(document).keydown(function(event) {
    }
    }
  });
+
 Define a turn count, an n-back, random audio, random video, ability to guess, audio response, video response
 Match n back to get current correctness for both
 Display individual affirmation if a match
@@ -115,4 +132,4 @@ Record current correctness for both by pushing onto correctness array
 Do this throughout the training
 total correct responses and percentages
 return to home screen
-
+*/
