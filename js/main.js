@@ -1,8 +1,4 @@
 
-
-  /* MODEL: Data Model **************************************************/
-  // make a single global-level object on window for the game…
-
 window.gameState = {
   flashes: undefined,
   n: 2,
@@ -38,18 +34,12 @@ window.gameState = {
     }
   }
 
-
-function match(input1,input2){
-  if (input1 === input2){
-    return true;
-  }
-    return false;
-}
 //Generates a random cell index from {0:8}
 function generateCell(){
   var randomCell = Math.floor(Math.random()*8);
   return randomCell;
 };
+
 //Generates a random sound name from {tsrkhl}
 function generateSound(){
   var sounds = ["t","s","r","k","h","l"];
@@ -57,14 +47,14 @@ function generateSound(){
   return randomSound;
 }
 
-function initialDelay(){
+function delay(){
   return true;
 }
 
 function mainEvent(){
+//set initial delay
+setTimeout(initialDelay, 250);
 for (i=0; i< trainingPeriod+2; i++){
-  //set initial delay
-  setTimeout(initialDelay, 250);
   //move the turn count
   flash++;
   //generate a sound and make it the current one
@@ -76,7 +66,9 @@ for (i=0; i< trainingPeriod+2; i++){
   //generate a cell index and make it the current one
   litCell = generateCell();
   //light the cell
-
+  var index = generateCell();
+  var createdDiv = document.createElement("DIV");
+  document.getElementById("cell" + index).appendChild(createdDiv);
   //record the cell lit
   videoGens[flash-1].push(litCell);
   //set canGuess if there have been enough flashes
@@ -84,7 +76,9 @@ for (i=0; i< trainingPeriod+2; i++){
     canGuess = true;
   }
   //add a key input listener that records answer
+  if (canGuess == true){
 
+  }
   //add another key input listener that records answer
 
   //if match(current event, n back), change a dom attribute
@@ -98,6 +92,22 @@ for (i=0; i< trainingPeriod+2; i++){
 }
   //return to home screen
 }
+
+$(document).keydown(function(event) {
+   var input = event.which; // return which key was pressed
+   if((input === 81) || (input === 87) || (input === 69) ||
+    (input === 82) || (input === 65) || (input === 83) ||
+    (input === 68) || (input === 70) || (input === 90) ||
+    (input === 88) || (input === 67)){
+     currentAudioResp = true;
+   } else if ((input === 80) || (input === 79) || (input === 73) ||
+    (input === 85) || (input === 74) || (input === 75) ||
+    (input === 76) || (input === 186) || (input === 77) ||
+    (input === 78) || (input === 188) || (input === 190)){
+     currentVideoResp = true;
+   }
+   }
+ });
 Define a turn count, an n-back, random audio, random video, ability to guess, audio response, video response
 Match n back to get current correctness for both
 Display individual affirmation if a match
