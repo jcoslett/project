@@ -13,6 +13,17 @@ td div {
    background-color: black;
 }
 
+html, body {
+    height: 100%;
+}
+
+html {
+    display: table;
+    margin: auto;
+}
+
 body {
-  background-color: gray;
+    background-color: gray;
+    display: table-cell;
+    vertical-align: middle;
 }
