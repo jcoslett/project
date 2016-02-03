@@ -1,17 +1,17 @@
-console.log("LOADED");
-
 var t;
 
-  window.g = {
+g = {
+    input: null,
     counter: 0,
     test: 0,
     n: 2,
     trainingPeriod: 20,
     speed: 1000,
     isInProgress: false,
-    canGuess: false,
     audioWasGuessed: false,
     videoWasGuessed: false,
+    canGuessAudio: false,
+    canGuessVideo: false,
     litCell: 0,
     currentSound: 0,
     currentAudioResp: 0,
@@ -31,40 +31,17 @@ function step() {
   lightCell();
   recordVideoGen();
   if (g.counter > g.n){
-    g.canGuess = true;
+    g.canGuessAudio = true;
+    g.canGuessVideo = true;
   }
-  if (g.canGuess == true){
-    setKeyboardListeners();
-  }
-    $(document).keydown(function(event) {
-      var input = event.which; // return which key was pressed
-      if((input === 81) || (input === 87) || (input === 69) ||
-          (input === 82) || (input === 65) || (input === 83) ||
-          (input === 68) || (input === 70) || (input === 90) ||
-          (input === 88) || (input === 67)) {
-              g.audioWasGuessed = true;
-              g.currentAudioResp = true;
-              g.audioResps.push(g.CurrentAudioResp);
-              checkForAudioMatch();
-              if (g.videoWasGuessed == true){ g.canGuess = false;}
-      } else if ((input === 80) || (input === 79) || (input === 73) ||
-          (input === 85) || (input === 74) || (input === 75) ||
-          (input === 76) || (input === 186) || (input === 77) ||
-          (input === 78) || (input === 188) || (input === 190)) {
-              videoWasGuessed = true;
-              currentVideoResp = true;
-              g.videoResps.push(currentVideoResp);
-              checkForVideoMatch();
-              if (audioWasGuessed == true){canGuess = false;}
-        }
-  else {
-    console.log("Can't guess");
-  }
-  console.log(g.currentSound,g.litCell,g.audioGens,g.videoGens,g.canGuess);
+  setKeyboardListeners();
+  console.log(g.currentSound,g.litCell,g.audioGens,g.videoGens,g.canGuessAudio,g.canGuessVideo);
+  clearListeners();
+  //removeDiv();
   if (g.counter == 5){
     clearInterval(t);
   }
-});
+}
 
 function start() {
   t = setInterval(step,1000);
@@ -108,31 +85,33 @@ function recordVideoGen(){
 
 function setKeyboardListeners(){
   $(document).keydown(function(event) {
-    var input = event.which; // return which key was pressed
-    if((input === 81) || (input === 87) || (input === 69) ||
-       (input === 82) || (input === 65) || (input === 83) ||
-       (input === 68) || (input === 70) || (input === 90) ||
-       (input === 88) || (input === 67)) {
-        g.audioWasGuessed = true;
-        g.currentAudioResp = true;
-        g.audioResps.push(g.CurrentAudioResp);
-        checkForAudioMatch();
-        if (g.videoWasGuessed == true){
-          g.canGuess = false;
-        } else if
-        ((input === 80) || (input === 79) || (input === 73) ||
-        (input === 85) || (input === 74) || (input === 75) ||
-        (input === 76) || (input === 186) || (input === 77) ||
-        (input === 78) || (input === 188) || (input === 190)) {
-          videoWasGuessed = true;
-          currentVideoResp = true;
-          g.videoResps.push(currentVideoResp);
-          checkForVideoMatch();
-          if (audioWasGuessed == true){canGuess = false;}
-          }
-          else {
-            console.log("Can't guess");
-          }
+    //console.log(event);
+    g.input = event.keycode; // return which key was pressed
+    if((g.input === 81) || (g.input === 87) || (g.input === 69) ||
+       (g.input === 82) || (g.input === 65) || (g.input === 83) ||
+       (g.input === 68) || (g.input === 70) || (g.input === 90) ||
+       (g.input === 88) || (g.input === 67) && (g.canGuessAudio == true)) {
+          g.canGuessAudio = false;
+          console.log("Audio match key pressed");
+    }
+    if ((g.input === 80) || (g.input === 79) || (g.input === 73) ||
+       (g.input === 85) || (g.input === 74) || (g.input === 75) ||
+       (g.input === 76) || (g.input === 186) || (g.input === 77) ||
+       (g.input === 78) || (g.input === 188) || (g.input === 190) && (g.canGuessVideo == true)) {
+          g.canGuessVideo = false;
+          console.log("Video match key pressed");
+       }
+  }
+)}
+
+function clearListeners() {
+  g.canGuessAudio = false;
+  g.canGuessVideo = false;
+}
+
+//removes the lit cell's div
+function removeDiv(){
+  $('td div').remove();
 }
 
 start();
