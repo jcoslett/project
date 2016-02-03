@@ -1,18 +1,24 @@
+//tests whether js loaded
+console.log("LOADED");
+//readies jQuery
+$( document ).ready(function() {
+    console.log( "ready!" );
+});
 
 window.gameState = {
-  flash: 0,
-  test: undefined,
+  flashes: 0,
+  test: 0,
   n: 2,
-  trainingPeriod : 20,
+  trainingPeriod: 20,
   speedSetting: 2500,
   isInProgress: false,
   canGuess: false,
   audioWasGuessed: false,
   videoWasGuessed: false,
-  litCell: undefined,
-  currentSound: undefined,
-  currentAudioResp: undefined,
-  currentVideoResp: undefined,
+  litCell: 0,
+  currentSound: 0,
+  currentAudioResp: 0,
+  currentVideoResp: 0,
   audioScore: 0,
   videoScore: 0,
   audioGens: [],
@@ -38,7 +44,7 @@ function generateSound(){
 }
 //delays
 function delay(){
-  return true;
+  console.log("Fires");
 }
 
 //generates a random cell and lights it
@@ -63,22 +69,32 @@ function removeDiv(){
 
 //plays one of the sounds randomly
 function playSound() {
-  var currentSound = generateSound();
+  gameState.currentSound = generateSound();
   //play the sound
 }
 
 //records the sound played
 function recordAudioGen(){
-  gameState.audioGens.push(currentSound);
+  gameState.audioGens.push(gameState.currentSound);
 }
+
+
+/*(function mainEvent() {
+    if (gameState.flashes++ >= gameState.trainingPeriod) return;
+
+    setTimeout(function() {
+        console.log(gameState.flashes);
+        mainEvent();
+    }, 3000);
+})();*/
 
 function mainEvent(){
   //set initial delay
-  setTimeout(delay, 250);
+  setTimeout(delay,500);
   //master for loop
   for (var i=0; i<gameState.trainingPeriod+2; i++){
     //move the turn count
-    gameState.flash++;
+    gameState.flash += 1;
     //generate a sound and make it the current one
     playSound();
     //record what sound was just played
@@ -87,8 +103,9 @@ function mainEvent(){
     lightCell();
     //record which cell was just lit
     recordVideoGen();
+    setTimeout(delay,2000);
     //set canGuess if there have been enough flashes
-    if (gameState.flash >= n){
+    if (gameState.flash >= gameState.n){
       gameState.canGuess = true;
     }
     //add a key input listener that records answers
@@ -99,11 +116,11 @@ function mainEvent(){
           (input === 82) || (input === 65) || (input === 83) ||
           (input === 68) || (input === 70) || (input === 90) ||
           (input === 88) || (input === 67)) {
-            currentAudioResp = true;
-            gameState.audioResps.push(currentAudioResp);
+            gameState.currentAudioResp = true;
+            gameState.audioResps.push(gameStateCurrentAudioResp);
             checkForAudioMatch();
-            if (videoWasGuessed == true){ canGuess = false;}
-            audioWasGuessed = true;
+            if (gameState.videoWasGuessed == true){ gameState.canGuess = false;}
+            gameState.audioWasGuessed = true;
         } else if ((input === 80) || (input === 79) || (input === 73) ||
           (input === 85) || (input === 74) || (input === 75) ||
           (input === 76) || (input === 186) || (input === 77) ||
@@ -120,16 +137,19 @@ function mainEvent(){
     //set timeout for video display
     setTimeout(removeDiv,500)
     //reset canGuess
-    canGuess = false;
-    if (wasGuessed = false){
+    gameState.canGuess = false;
+    if (gameState.wasGuessed = false){
       gameState.videoResps.push(false);
     }
+  setTimeout(delay,2000);
   }
+
+
 }
 
 function checkForAudioMatch (){
   var length1 = gameState.audioGens.length;
-  if ((audioWasGuessed == true) && (currentAudioResp == true) && (currentAudioResp == gameState.audioGens[length1 - n])) {
+  if ((audioWasGuessed == true) && (gameState.currentAudioResp == true) && (gameState.currentAudioResp == gameState.audioGens[length1 - gameState.n])) {
     gameState.audioScore++;
     playIfMatched();
   } else {
@@ -139,7 +159,7 @@ function checkForAudioMatch (){
 
 function checkForVideoMatch (){
   var length2 = gameState.videoGens.length;
-  if ((wasGuessed == true) && (currentVideoResp == true) && (currentVideoResp == gameState.videoGens[length2 - n])) {
+  if ((gameState.wasGuessed == true) && (gameState.currentVideoResp == true) && (gameState.currentVideoResp == gameState.videoGens[length2 - gameState.n])) {
     gameState.videoScore++;
     flashIfMatched();
   } else {
@@ -152,25 +172,6 @@ function playIfMatched(){
   audio.play();
 }
 
-function checkForAudioMatch (){
-  var length1 = gameState.audioGens.length;
-  if ((audioWasGuessed == true) && (currentAudioResp == true) && (currentAudioResp == gameState.audioGens[length1 - n])) {
-    gameState.audioScore++;
-    playIfMatched();
-  } else {
-    return false;
-  }
-}
-
-function checkForVideoMatch (){
-  var length2 = gameState.videoGens.length;
-  if ((wasGuessed == true) && (currentVideoResp == true) && (currentVideoResp == gameState.videoGens[length2 - n])) {
-    gameState.videoScore++;
-    flashIfMatched();
-  } else {
-    return false;
-  }
-}
 
 function flashIfMatched(){
 
