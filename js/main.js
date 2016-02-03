@@ -7,6 +7,8 @@ window.gameState = {
   speedSetting: 2000,
   isInProgress: false,
   canGuess: false,
+  audioWasGuessed: false,
+  videoWasGuessed: false,
   litCell: undefined,
   currentSound: undefined,
   currentAudioResp: undefined,
@@ -21,11 +23,11 @@ window.gameState = {
 
 //Generates a random cell index from {0:8}
 function generateCell(){
-  var randomCell = Math.floor(Math.random()*8);
+  var randomCell = Math.floor(Math.random()*9);
   return randomCell;
 };
 
-//Generates a random sound name from {tsrkhl}
+//Generates a random sound name from {mstfkh}
 function generateSound(){
   var sounds = ["m","s","t","f","k","h"];
   var randomSound = sounds[Math.floor(Math.random()*sounds.length)];
@@ -35,40 +37,55 @@ function generateSound(){
 function delay(){
   return true;
 }
-//
-function removeDiv(){
-$('td div').remove();
-}
 
-function resetMoves(){
-
-}
-
-function lightAndRecord() {
+//generates a random cell and lights it
+function lightCell() {
   litCell = generateCell();
   var createdDiv = document.createElement("div");
   $("#cell" + litCell).append(createdDiv);
-  gameState.videoGens.push(litCell);
+  return true;
 }
 
-function playAndRecord() {
+//records the lit cell
+function recordVideoGen(){
+  gameState.videoGens.push(litCell);
+  return true;
+}
+
+//removes the lit cell's div
+function removeDiv(){
+  $('td div').remove();
+  return true;
+}
+
+//plays one of the sounds randomly
+function playSound() {
   var currentSound = generateSound();
   //play the sound
+}
+
+//records the sound played
+function recordAudioGen(){
   gameState.audioGens.push(currentSound);
 }
 
 function mainEvent(){
   //set initial delay
   setTimeout(delay, 250);
+  //master for loop
   for (i=0; i< trainingPeriod+2; i++){
   //move the turn count
   flash++;
-  //generate a sound, make it the current one, and record it
-  playAndRecord();
-  //generate a cell, make it the current one, and record it
-  lightAndRecord();
+  //generate a sound and make it the current one
+  playSound();
+  //record what sound was just played
+  recordAudioGen();
+  //generate a cell and make it the current one
+  lightCell();
+  //record which cell was just lit
+  recordVideoGen();
   //set canGuess if there have been enough flashes
-  if (flash > n){
+  if (flash >= n){
     canGuess = true;
   }
   //add a key input listener that records answers
@@ -80,40 +97,46 @@ function mainEvent(){
         (input === 68) || (input === 70) || (input === 90) ||
         (input === 88) || (input === 67)){
           currentAudioResp = true;
-          gameState.videoResps.push(currentVideoResp);
+          gameState.audioResps.push(currentAudioResp);
+          if (videoWasGuessed == true){ canGuess = false;}
+          audioWasGuessed = true;
       } else if ((input === 80) || (input === 79) || (input === 73) ||
         (input === 85) || (input === 74) || (input === 75) ||
         (input === 76) || (input === 186) || (input === 77) ||
         (input === 78) || (input === 188) || (input === 190)){
           currentVideoResp = true;
           gameState.videoResps.push(currentVideoResp);
+          if (audioWasGuessed == true){canGuess = false;}
+          videoWasGuessed = true;
   }
  });
-  //add another key input listener that records answer
-
   //if match(current event, n back), change a dom attribute
-function checkForMatch (){
+function checkForAudioMatch (){
   var length1 = gameState.audioGens.length;
-  if ((canGuess == true) && (currentAudioResp == true) && (currentAudioResp == gameState.audioGens[length1 - n]{
+  if ((audioWasGuessed == true) && (currentAudioResp == true) && (currentAudioResp == gameState.audioGens[length1 - n]{
     audioScore++;
     playIfMatched();
   } else {
     return false;
     }
+
+function checkForVideoMatch (){
   var length2 = gameState.videoGens.length;
-  if ((canGuess == true) && (currentVideoResp == true) && (currentVideoResp == gameState.videoGens[length1 - n]{
+  if ((wasGuessed == true) && (currentVideoResp == true) && (currentVideoResp == gameState.videoGens[length2 - n]{
     videoScore++;
-    playIfMatched();
+    flashIfMatched();
   } else {
     return false;
     }
 }
-  //do this again for the other match
-
   //set timeout for video display
 
   //reset canGuess
-  canGuess == false;
+  canGuess = false;
+  if (wasGuessed = false){
+    gameState.videoResps.push(false);
+  }
+  if
 }
   //return to home screen
 }
