@@ -150,20 +150,20 @@ $( document ).ready(function() {
 
   }
 
-  function checkForAudioMatch (){
+  function checkForAudioMatch (g.currentAudioResp){
     var length1 = gameState.audioGens.length;
-    if ((audioWasGuessed == true) && (gameState.currentAudioResp == true) && (gameState.currentAudioResp == gameState.audioGens[length1 - gameState.n])) {
-      gameState.audioScore++;
+    if ((g.audioWasGuessed == true) && (g.currentAudioResp == true) && (g.currentAudioResp == g.audioGens[length1 - g.n])) {
+      g.audioScore++;
       playIfMatched();
     } else {
       return false;
     }
   }
 
-  function checkForVideoMatch (){
-    var length2 = gameState.videoGens.length;
-    if ((gameState.wasGuessed == true) && (gameState.currentVideoResp == true) && (gameState.currentVideoResp == gameState.videoGens[length2 - gameState.n])) {
-      gameState.videoScore++;
+  function checkForVideoMatch (g.currentVideoResp){
+    var length2 = g.videoGens.length;
+    if ((g.wasGuessed == true) && (g.currentVideoResp == true) && (g.currentVideoResp == gameState.videoGens[length2 - gameState.n])) {
+      g.videoScore++;
       flashIfMatched();
     } else {
       return false;
