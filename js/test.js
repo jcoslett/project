@@ -5,7 +5,7 @@ var g = {
     counter: 0,
     test: 0,
     // n: 2,
-    trainingPeriod: 20,
+    trainingPeriod: 10,
     speed: 3350,
     isInProgress: false,
     audioWasGuessed: false,
@@ -26,13 +26,17 @@ var g = {
     videoWronguns: 0
   }
 
+var sounds = {
+
+}
+
 $('body').keydown(function(event) {
   g.input = event.keyCode; // return which key was pressed
   if(((g.input === 70) || (g.input === 68) || (g.input === 83) ||
      (g.input === 65)) && (g.canGuessAudio === true)) { // left hand audio
         if (g.audioGens[0] === g.audioGens[2]) {
           g.audioScore += 1;
-          //play match sound
+          document.getElementById('SP').play();
         } else {
             g.audioWronguns += 1;
           }
@@ -42,7 +46,7 @@ $('body').keydown(function(event) {
      (g.input === 186)) && (g.canGuessVideo === true)) { // right hand visual
       if (g.videoGens[0] === g.videoGens[2]) {
         g.videoScore += 1;
-        //change
+       document.getElementById('SP').play();
       } else {
           g.videoWronguns += 1;
       }
@@ -61,11 +65,6 @@ function step() {
     g.canGuessAudio = true;
     g.canGuessVideo = true;
   }
-  if (g.counter > 3) {
-    g.audioGens.pop();
-    g.videoGens.pop();
-    console.log(g.audioScore,g.videoScore,g.audioWronguns,g.videoWronguns);
-  }
   if (g.videoGens[0] === g.videoGens[2]) {
     g.visMatches += 1;
     console.log("vis match");
@@ -75,12 +74,19 @@ function step() {
     console.log("aud match");
   }
 
+  if (g.counter > 3) {
+    g.audioGens.pop();
+    g.videoGens.pop();
+    console.log(g.audMatches,g.visMatches,g.audioScore,g.videoScore,g.audioWronguns,g.videoWronguns);
+  }
+
+
   // console.log(g.currentSound,g.litCell,g.audioGens,g.videoGens,g.canGuessAudio,g.canGuessVideo);
   //clearListeners();
   //removeDiv();
   setTimeout(removeDiv,g.speed/2);
 
-  if (g.counter === 25){
+  if (g.counter === g.trainingPeriod){
     clearInterval(t);
   }
 }
@@ -99,7 +105,7 @@ function generateSound(){
 //plays one of the sounds randomly
 function playSound() {
   g.currentSound = generateSound();
-  //play the sound
+  if (g.currentSound == "m")
 }
 
 //records the sound played
