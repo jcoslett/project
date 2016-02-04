@@ -29,6 +29,7 @@ $('body').keydown(function(event) {
         g.canGuessAudio = false;
         if (g.audioGens[0] === g.audioGens[2]) {
           g.audioScore += 1;
+          //play match sound
         }
         console.log("Audio match key pressed");
   }
@@ -36,7 +37,8 @@ $('body').keydown(function(event) {
      (g.input === 186)) && (g.canGuessVideo === true)) { // right hand visual
         g.canGuessVideo = false;
       if (g.videoGens[0] === g.videoGens[2]) {
-        g.audioScore += 1;
+        g.videoScore += 1;
+        //change background
       }
         console.log("Video match key pressed");
      }
