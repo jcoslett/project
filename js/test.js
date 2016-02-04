@@ -14,15 +14,33 @@ var g = {
     canGuessVideo: false,
     litCell: 0,
     currentSound: 0,
-    currentAudioResp: 0,
-    currentVideoResp: 0,
+    currentAudioResp: null,
+    currentVideoResp: null,
     audioScore: 0,
     videoScore: 0,
     audioGens: [],
-    videoGens: [],
-    audioResps: [],
-    videoResps: [],
+    videoGens: []
   }
+
+$('body').keydown(function(event) {
+  g.input = event.keyCode; // return which key was pressed
+  if(((g.input === 70) || (g.input === 68) || (g.input === 83) ||
+     (g.input === 65)) && (g.canGuessAudio === true)) { // left hand audio
+        g.canGuessAudio = false;
+        if (g.audioGens[0] === g.audioGens[2]) {
+          g.audioScore += 1;
+        }
+        console.log("Audio match key pressed");
+  }
+  if (((g.input === 74) || (g.input === 75) || (g.input === 76) ||
+     (g.input === 186)) && (g.canGuessVideo === true)) { // right hand visual
+        g.canGuessVideo = false;
+      if (g.videoGens[0] === g.videoGens[2]) {
+        g.audioScore += 1;
+      }
+        console.log("Video match key pressed");
+     }
+});
 
 function step() {
   removeDiv();
@@ -35,10 +53,15 @@ function step() {
     g.canGuessAudio = true;
     g.canGuessVideo = true;
   }
-  console.log(g.currentSound,g.litCell,g.audioGens,g.videoGens,g.canGuessAudio,g.canGuessVideo);
+  if (g.counter > 3) {
+    g.audioGens.pop();
+    g.videoGens.pop();
+    if (g.videoGens[0] === g.videoGens[2]) console.log("Visual Match!");
+  }
+  // console.log(g.currentSound,g.litCell,g.audioGens,g.videoGens,g.canGuessAudio,g.canGuessVideo);
   //clearListeners();
   //removeDiv();
-  if (g.counter == 5){
+  if (g.counter === 25){
     clearInterval(t);
   }
 }
@@ -80,27 +103,9 @@ function lightCell() {
 
 //records the lit cell
 function recordVideoGen(){
-  g.videoGens.push(g.litCell);
+  g.videoGens.unshift(g.litCell);
 }
 
-$('body').keydown(function(event) {
-  g.input = event.keyCode; // return which key was pressed
-  if(((g.input === 70) || (g.input === 68) || (g.input === 83) ||
-     (g.input === 65)) && (g.canGuessAudio === true)) { // left hand audio
-        g.canGuessAudio = false;
-        console.log("Audio match key pressed");
-  }
-  if (((g.input === 74) || (g.input === 75) || (g.input === 76) ||
-     (g.input === 186)) && (g.canGuessVideo === true)) { // right hand visual
-        g.canGuessVideo = false;
-        console.log("Video match key pressed");
-     }
-})
-
-function clearListeners() {
-  g.canGuessAudio = false;
-  g.canGuessVideo = false;
-}
 
 //removes the lit cell's div
 function removeDiv(){
