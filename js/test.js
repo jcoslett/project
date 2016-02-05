@@ -27,6 +27,8 @@ var g = {
   };
 
 $('body').keydown(function(event) {
+  var log = "kdown ";
+
   g.input = event.keyCode; // return which key was pressed
   if (
       ( // left hand audio
@@ -36,13 +38,27 @@ $('body').keydown(function(event) {
         (g.input === 65)    // F
       ) && (g.canGuessAudio === true)
     ) {
+    if (g.audioWasGuessed) return; // ignore multiples
+    g.audioWasGuessed = true;
+
+    log += "AUD ";
     if (g.audioGens[0] === g.audioGens[n]) {
       g.audioScore++;
       document.getElementById('SP').play();
+      log += "MATCH!";
+      // $("body").css({background: "green"}).delay(100).queue(function (next) {
+      //   $(this).css({background: "gray"});
+      //   next();
+      // });
     } else {
       g.audioWronguns++;
+      log += "miss.";
+      // $("body").css({background: "red"}).delay(100).queue(function (next) {
+      //   $(this).css({background: "gray"});
+      //   next();
+      // });
     }
-  }
+  } else
   if (
       ( // right hand visual
         (g.input === 74) || // J
@@ -51,17 +67,37 @@ $('body').keydown(function(event) {
         (g.input === 186)   // ;
       ) && (g.canGuessVideo === true)
     ) {
+    if (g.videoWasGuessed) return; // ignore multiples
+    g.videoWasGuessed = true;
+
+    log += "VID ";
     if (g.videoGens[0] === g.videoGens[n]) {
       g.videoScore++;
       document.getElementById('SP').play();
+      log += "MATCH!";
+      // $("body").css({background: "green"}).delay(100).queue(function (next) {
+      //   $(this).css({background: "gray"});
+      //   next();
+      // });
     } else {
       g.videoWronguns++;
+      log += "miss.";
+      // $("body").css({background: "red"}).delay(100).queue(function (next) {
+      //   $(this).css({background: "gray"});
+      //   next();
+      // });
     }
+  } else {
+    return; // do nothing. return nothing. ignore.
   }
+
+  console.log(log);
 });
 
 function step() {
   g.counter++;
+  g.audioWasGuessed = false;
+  g.videoWasGuessed = false;
 
   playSound();
   recordAudioGen();
@@ -108,6 +144,10 @@ function step() {
 
 function start() {
   t = setInterval(step, g.speed);
+}
+
+function pause() {
+  clearInterval(t);
 }
 
 // Generates a random sound name from {mstfkh}
