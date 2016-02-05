@@ -1,10 +1,9 @@
 var t;
 
+var n = 2; // number back
 var g = {
     input: null,
     counter: 0,
-    test: 0,
-    // n: 2,
     trainingPeriod: 10,
     speed: 3350,
     isInProgress: false,
@@ -23,68 +22,84 @@ var g = {
     visMatches: 0,
     audMatches: 0,
     audioWronguns: 0,
-    videoWronguns: 0
-  }
-
-var sounds = {
-
-}
+    videoWronguns: 0,
+    sounds: ["M","S","T","F","K","H"]
+  };
 
 $('body').keydown(function(event) {
   g.input = event.keyCode; // return which key was pressed
-  if(((g.input === 70) || (g.input === 68) || (g.input === 83) ||
-     (g.input === 65)) && (g.canGuessAudio === true)) { // left hand audio
-        if (g.audioGens[0] === g.audioGens[2]) {
-          g.audioScore += 1;
-          document.getElementById('SP').play();
-        } else {
-            g.audioWronguns += 1;
-          }
-
+  if (
+      ( // left hand audio
+        (g.input === 70) || // A
+        (g.input === 68) || // S
+        (g.input === 83) || // D
+        (g.input === 65)    // F
+      ) && (g.canGuessAudio === true)
+    ) {
+    if (g.audioGens[0] === g.audioGens[n]) {
+      g.audioScore++;
+      document.getElementById('SP').play();
+    } else {
+      g.audioWronguns++;
+    }
   }
-  if (((g.input === 74) || (g.input === 75) || (g.input === 76) ||
-     (g.input === 186)) && (g.canGuessVideo === true)) { // right hand visual
-      if (g.videoGens[0] === g.videoGens[2]) {
-        g.videoScore += 1;
-       document.getElementById('SP').play();
-      } else {
-          g.videoWronguns += 1;
-      }
-
-      }
+  if (
+      ( // right hand visual
+        (g.input === 74) || // J
+        (g.input === 75) || // K
+        (g.input === 76) || // L
+        (g.input === 186)   // ;
+      ) && (g.canGuessVideo === true)
+    ) {
+    if (g.videoGens[0] === g.videoGens[n]) {
+      g.videoScore++;
+      document.getElementById('SP').play();
+    } else {
+      g.videoWronguns++;
+    }
+  }
 });
 
 function step() {
-  //removeDiv();
   g.counter++;
+
   playSound();
   recordAudioGen();
   lightCell();
   recordVideoGen();
-  if (g.counter > 2){
+
+  if (g.counter > n) {
     g.canGuessAudio = true;
     g.canGuessVideo = true;
   }
-  if (g.videoGens[0] === g.videoGens[2]) {
-    g.visMatches += 1;
-    console.log("vis match");
+  if (g.videoGens[0] === g.videoGens[n]) {
+    g.visMatches++;
+    console.log("Currently in Vis Match…");
   }
-  if (g.audioGens[0] === g.audioGens[2]){
-    g.audMatches += 1;
-    console.log("aud match");
+  if (g.audioGens[0] === g.audioGens[n]){
+    g.audMatches++;
+    console.log("Currently in Aud Match…");
   }
 
-  if (g.counter > 3) {
+  if (g.counter > (n+1)) {
     g.audioGens.pop();
     g.videoGens.pop();
-    console.log(g.audMatches,g.visMatches,g.audioScore,g.videoScore,g.audioWronguns,g.videoWronguns);
   }
 
+  if (g.counter > n) {
+    console.log(
+        "Counter:", g.counter,
+      "\nNow (Box/Tone): (" + g.videoGens[0].slice(-1) + "/" + g.audioGens[0] + ")",
+      "\nN-B (Box/Tone): (" + g.videoGens[n].slice(-1) + "/" + g.audioGens[n] + ")",
+      "\nMatches (A/V):  (" + g.audMatches + "/" + g.visMatches + ")",
+      "\nCorrect (A/V:   (" + g.audioScore + "/" + g.videoScore + ")",
+      "\nWrongun (A/V):  (" + g.audioWronguns + "/" + g.videoWronguns + ")"
+    );
+  } else {
+    console.log("Counter:", g.counter, "(Box/Tone): (" + g.videoGens[0].slice(-1) + "/" + g.audioGens[0] + ")");
+  }
 
-  // console.log(g.currentSound,g.litCell,g.audioGens,g.videoGens,g.canGuessAudio,g.canGuessVideo);
-  //clearListeners();
-  //removeDiv();
-  setTimeout(removeDiv,g.speed/2);
+  setTimeout(removeDiv, g.speed/2);
 
   if (g.counter === g.trainingPeriod){
     clearInterval(t);
@@ -92,47 +107,45 @@ function step() {
 }
 
 function start() {
-  t = setInterval(step,g.speed);
+  t = setInterval(step, g.speed);
 }
 
-//Generates a random sound name from {mstfkh}
+// Generates a random sound name from {mstfkh}
 function generateSound(){
-  var sounds = ["m","s","t","f","k","h"];
-  var randomSound = sounds[Math.floor(Math.random()*sounds.length)];
+  var randomSound = g.sounds[Math.floor(Math.random()*g.sounds.length)];
   return randomSound;
 }
 
-//plays one of the sounds randomly
+// Plays one of the sounds randomly
 function playSound() {
   g.currentSound = generateSound();
-  if (g.currentSound == "m")
+  document.getElementById(g.currentSound).play();
 }
 
-//records the sound played
+// Records the sound played
 function recordAudioGen(){
   g.audioGens.unshift(g.currentSound);
 }
 
-//Generate a random cell index from {0:8}
+// Generate a random cell index from {0:8}
 function generateCell(){
   var randomCell = Math.floor(Math.random()*9);
   return randomCell;
 };
 
-//generates a random cell and lights it
+// Generates a random cell and lights it
 function lightCell() {
   g.litCell = "#cell" + generateCell();
   var createdDiv = document.createElement("div");
   $(g.litCell).append(createdDiv);
 }
 
-//records the lit cell
+// Records the lit cell
 function recordVideoGen(){
   g.videoGens.unshift(g.litCell);
 }
 
-
-//removes the lit cell's div
+// Removes the lit cell's div
 function removeDiv(){
   $('td div').remove();
 }
