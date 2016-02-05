@@ -139,6 +139,7 @@ function step() {
 
   if (g.counter === g.trainingPeriod){
     clearInterval(t);
+    setTimeout(reload, 10000);
   }
 }
 
@@ -167,7 +168,7 @@ function recordAudioGen(){
   g.audioGens.unshift(g.currentSound);
 }
 
-// Generate a random cell index from {0:8}
+// Generates a random cell index from {0:8}
 function generateCell(){
   var randomCell = Math.floor(Math.random()*9);
   return randomCell;
@@ -190,4 +191,9 @@ function removeDiv(){
   $('td div').remove();
 }
 
+function reload (){
+  window.location.reload(true);
+}
+
 start();
+
