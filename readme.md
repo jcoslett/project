@@ -8,6 +8,8 @@
 5. Installation Instructions
 6. Planned Features
 
+###View [the Trello Board](https://trello.com/b/xldSbCGn/project) used in designing this game!
+
 ##Game Description
 
 Dual n-Back is a task that challenges users to simultaneously match both visual and audio stimuli to those appearing n turns ago within a sequence.
