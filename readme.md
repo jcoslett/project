@@ -1,5 +1,8 @@
 #Dual n-Back
 
+![State 1](/assets/images/img1.png)
+![State 2](/assets/images/img2.png)
+
 ##Contents:
 1. Game Description
 2. How to Play
